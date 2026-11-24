@@ -834,3 +834,67 @@
     window.game = new SakuraDriftGame();
   });
 })();
+
+// === ТОЧЕЧНЫЙ ФИКС: Надёжный мультитач по координатам для Android WebView ===
+(function () {
+  function hit(el, x, y, pad) {
+    if (!el || el.offsetParent === null) return false;
+    var r = el.getBoundingClientRect();
+    return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad;
+  }
+  function handleTouches(e) {
+    var g = window.game;
+    if (!g || g.state !== 'DRIVING') return;
+    var bL = document.getElementById('btnLeft');
+    var bR = document.getElementById('btnRight');
+    var bG = document.getElementById('btnGas');
+    var bB = document.getElementById('btnBrake');
+    var bH = document.getElementById('btnHandbrake');
+    var sZone = document.getElementById('steerSliderZone');
+    var sKnob = document.getElementById('steerSliderKnob');
+
+    var l = false, r = false, gas = false, brk = false, hb = false, sliderVal = null;
+    var usedControl = false;
+
+    for (var i = 0; i < e.touches.length; i++) {
+      var t = e.touches[i];
+      var x = t.clientX, y = t.clientY;
+      if (hit(bL, x, y, 12)) { l = true; usedControl = true; }
+      else if (hit(bR, x, y, 12)) { r = true; usedControl = true; }
+      if (hit(bG, x, y, 12)) { gas = true; usedControl = true; }
+      else if (hit(bB, x, y, 12)) { brk = true; usedControl = true; }
+      if (hit(bH, x, y, 12)) { hb = true; usedControl = true; }
+      if (sZone && hit(sZone, x, y, 14)) {
+        var rect = sZone.getBoundingClientRect();
+        sliderVal = Math.max(-1, Math.min(1, ((x - rect.left) / rect.width) * 2 - 1));
+        usedControl = true;
+      }
+    }
+
+    if (usedControl || e.type === 'touchend' || e.type === 'touchcancel') {
+      if (usedControl && e.cancelable) e.preventDefault();
+      g.input.left = l;
+      g.input.right = r;
+      g.input.throttle = gas ? 1 : 0;
+      g.input.brake = brk ? 1 : 0;
+      g.input.handbrake = hb;
+      if (bL) bL.classList.toggle('pressed', l);
+      if (bR) bR.classList.toggle('pressed', r);
+      if (bG) bG.classList.toggle('pressed', gas);
+      if (bB) bB.classList.toggle('pressed', brk);
+      if (bH) bH.classList.toggle('pressed', hb);
+      if (sliderVal !== null) {
+        g.input.sliderSteer = sliderVal;
+        if (sKnob) sKnob.style.left = (50 + sliderVal * 38) + '%';
+      } else if (g.settings.steerMode === 'slider') {
+        g.input.sliderSteer = 0;
+        if (sKnob) sKnob.style.left = '50%';
+      }
+      if (gas || brk || hb || l || r) g.audio.init();
+    }
+  }
+  document.addEventListener('touchstart', handleTouches, { passive: false });
+  document.addEventListener('touchmove', handleTouches, { passive: false });
+  document.addEventListener('touchend', handleTouches, { passive: false });
+  document.addEventListener('touchcancel', handleTouches, { passive: false });
+})();
