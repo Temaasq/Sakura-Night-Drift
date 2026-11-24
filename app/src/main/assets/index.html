@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Sakura Night Drift 3D</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- ==================== ЭКРАН ГАРАЖА ==================== -->
+  <div id="garageOverlay" class="overlay">
+    <div class="garage-top">
+      <div class="brand-block">
+        <div class="brand-title">SAKURA NIGHT DRIFT</div>
+        <div class="brand-sub">Ночной дрифт в Японии • 100% Офлайн 3D</div>
+      </div>
+      <div class="garage-record">
+        <span>Рекорд:</span>
+        <strong id="garageBestScore">0</strong>
+      </div>
+      <div class="garage-zoom">
+        <button id="btnZoomOut" class="pill-btn" type="button">−</button>
+        <span class="hint-orbit">Крутите пальцем 360°</span>
+        <button id="btnZoomIn" class="pill-btn" type="button">+</button>
+      </div>
+    </div>
+
+    <div class="garage-side left-panel">
+      <div class="panel-title">Выбор машины</div>
+      <div class="cat-tabs">
+        <button id="tabBeaters" class="tab-btn active" type="button">Некрухи</button>
+        <button id="tabWidebody" class="tab-btn" type="button">Взорванные</button>
+      </div>
+      <div id="carList" class="car-list"></div>
+
+      <div class="panel-title" style="margin-top:10px;">Трасса</div>
+      <div id="trackList" class="track-list"></div>
+    </div>
+
+    <div class="garage-side right-panel">
+      <div class="panel-title">Тюнинг и настройка</div>
+      <div class="tuning-scroll">
+        <label class="tune-row">
+          <span>Выворот руля: <b id="valSteer">54°</b></span>
+          <input id="tuneSteer" type="range" min="40" max="65" step="1" value="54">
+        </label>
+        <label class="tune-row">
+          <span>Развал спереди: <b id="valCamberF">-4.0°</b></span>
+          <input id="tuneCamberF" type="range" min="-12" max="0" step="0.5" value="-4">
+        </label>
+        <label class="tune-row">
+          <span>Развал сзади: <b id="valCamberR">-2.0°</b></span>
+          <input id="tuneCamberR" type="range" min="-12" max="0" step="0.5" value="-2">
+        </label>
+        <label class="tune-row">
+          <span>Вылет колёс: <b id="valOffset">+5 см</b></span>
+          <input id="tuneOffset" type="range" min="0" max="14" step="1" value="5">
+        </label>
+        <label class="tune-row">
+          <span>Посадка (клиренс): <b id="valHeight">-6 см</b></span>
+          <input id="tuneHeight" type="range" min="-12" max="6" step="1" value="-6">
+        </label>
+        <label class="tune-row">
+          <span>Давление задних шин: <b id="valPressure">2.2 бар</b></span>
+          <input id="tunePressure" type="range" min="1.5" max="3.2" step="0.1" value="2.2">
+        </label>
+        <label class="tune-row">
+          <span>Главная пара КПП: <b id="valFinal">4.0</b></span>
+          <input id="tuneFinal" type="range" min="3.2" max="4.8" step="0.1" value="4.0">
+        </label>
+        <div class="tune-row">
+          <span>Мотор / Турбо:</span>
+          <div class="stage-btns">
+            <button id="stage1Btn" class="stage-btn" data-stage="1" type="button">Stage 1</button>
+            <button id="stage2Btn" class="stage-btn" data-stage="2" type="button">Stage 2</button>
+            <button id="stage3Btn" class="stage-btn" data-stage="3" type="button">Stage 3</button>
+          </div>
+        </div>
+      </div>
+      <button id="btnResetTune" class="ghost-btn" type="button">Сбросить настройки</button>
+    </div>
+
+    <div class="garage-bottom">
+      <div class="selected-car-info">
+        <div id="selCarName" class="sel-car-name">Марк II 90 — Боевой Дед</div>
+        <div id="selCarSub" class="sel-car-sub">JZX90 • 310 л.с.</div>
+      </div>
+      <button id="btnStartRace" class="start-btn" type="button">ВЫЕХАТЬ НА ТРАССУ</button>
+    </div>
+  </div>
+
+  <!-- ==================== ИГРОВОЙ HUD (ЗАЕЗД) ==================== -->
+  <div id="hudOverlay" class="overlay hidden">
+    <!-- Верхняя панель -->
+    <div class="hud-top">
+      <div class="hud-top-left">
+        <button id="btnHudGarage" class="hud-btn" type="button">Гараж</button>
+        <button id="btnHudTrack" class="hud-btn" type="button">Трасса</button>
+        <button id="btnHudPause" class="hud-btn" type="button">Пауза</button>
+      </div>
+
+      <div class="hud-center">
+        <div class="total-score-row">
+          <span>СЧЁТ: <b id="hudTotalScore">0</b></span>
+          <span class="sep">|</span>
+          <span>РЕКОРД: <b id="hudBestScore">0</b></span>
+        </div>
+        <div id="driftCounterBox" class="drift-counter">
+          <div class="drift-live-row">
+            <span id="hudLivePoints" class="live-pts">0</span>
+            <span id="hudCombo" class="combo-badge">x1</span>
+          </div>
+          <div class="combo-bar-wrap">
+            <div id="hudComboBar" class="combo-bar-fill"></div>
+          </div>
+          <div class="angle-row">
+            УГОЛ: <b id="hudAngle">0°</b>
+          </div>
+        </div>
+        <div id="hudBanner" class="hud-banner"></div>
+      </div>
+
+      <div class="hud-top-right">
+        <div class="telemetry-card">
+          <div class="speed-gear-row">
+            <div class="speed-block">
+              <span id="hudSpeed" class="speed-val">0</span>
+              <span class="speed-unit">КМ/Ч</span>
+            </div>
+            <div id="hudGear" class="gear-badge">1</div>
+          </div>
+          <div class="rpm-bar-wrap">
+            <div id="hudRpmBar" class="rpm-bar-fill"></div>
+          </div>
+          <div class="boost-row">
+            <span>ТУРБО</span>
+            <div class="boost-bar-wrap">
+              <div id="hudBoostBar" class="boost-bar-fill"></div>
+            </div>
+            <span id="hudBoostVal">0.0</span>
+          </div>
+        </div>
+        <button id="btnHudCam" class="hud-btn cam-btn" type="button">Камера: 3-е лицо</button>
+      </div>
+    </div>
+
+    <!-- Сенсорное управление: Левая зона (руль) -->
+    <div class="controls-left">
+      <div id="steerButtonsWrap" class="steer-buttons">
+        <div class="steer-indicator-track">
+          <div id="steerIndicatorThumb" class="steer-indicator-thumb"></div>
+        </div>
+        <div class="steer-btn-row">
+          <button id="btnLeft" class="touch-btn steer-btn" type="button">◄</button>
+          <button id="btnRight" class="touch-btn steer-btn" type="button">►</button>
+        </div>
+      </div>
+
+      <div id="steerSliderWrap" class="steer-slider-wrap hidden">
+        <div class="slider-label">РУЛЬ (СЛАЙДЕР)</div>
+        <div id="steerSliderZone" class="steer-slider-zone">
+          <div id="steerSliderKnob" class="steer-slider-knob"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Сенсорное управление: Правая зона (педали, ручник, клатч-кик) -->
+    <div class="controls-right">
+      <div class="aux-btn-row">
+        <button id="btnHandbrake" class="touch-btn aux-btn handbrake-btn" type="button">РУЧНИК</button>
+        <button id="btnClutch" class="touch-btn aux-btn clutch-btn" type="button">СЦЕПЛ.</button>
+      </div>
+      <div class="pedal-row">
+        <button id="btnBrake" class="touch-btn pedal-btn brake-btn" type="button">ТОРМОЗ</button>
+        <button id="btnGas" class="touch-btn pedal-btn gas-btn" type="button">ГАЗ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== МЕНЮ ПАУЗЫ И НАСТРОЕК ==================== -->
+  <div id="pauseModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Пауза и настройки</h2>
+
+      <div class="setting-row">
+        <span>Управление рулём:</span>
+        <div class="seg-btns">
+          <button id="optSteerBtns" class="seg-btn active" type="button">Кнопки</button>
+          <button id="optSteerSlider" class="seg-btn" type="button">Слайдер</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span>Помощь в дрифте: <b id="valAssist">45%</b></span>
+        <input id="optAssist" type="range" min="0" max="70" step="5" value="45">
+      </div>
+
+      <div class="setting-row">
+        <span>Графика:</span>
+        <div class="seg-btns">
+          <button id="optQualLow" class="seg-btn" data-q="low" type="button">Низк.</button>
+          <button id="optQualMed" class="seg-btn active" data-q="med" type="button">Средн.</button>
+          <button id="optQualHigh" class="seg-btn" data-q="high" type="button">Высок.</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span>Звук двигателя и шин:</span>
+        <button id="optMuteBtn" class="seg-btn active" type="button">Включён</button>
+      </div>
+
+      <div class="modal-actions">
+        <button id="btnResume" class="primary-btn" type="button">Продолжить</button>
+        <button id="btnRestart" class="secondary-btn" type="button">Начать заново</button>
+        <button id="btnFinishRun" class="secondary-btn" type="button">Итоги заезда</button>
+        <button id="btnPauseGarage" class="ghost-btn" type="button">В гараж</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ИТОГИ ЗАЕЗДА ==================== -->
+  <div id="summaryModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Итоги заезда</h2>
+      <div class="summary-grid">
+        <div class="sum-item"><span>Итоговый счёт</span><b id="sumScore">0</b></div>
+        <div class="sum-item"><span>Лучший рекорд</span><b id="sumBest">0</b></div>
+        <div class="sum-item"><span>Макс. связка</span><b id="sumBestCombo">0</b></div>
+        <div class="sum-item"><span>Макс. угол</span><b id="sumMaxAngle">0°</b></div>
+        <div class="sum-item"><span>Wall Tap</span><b id="sumWallTaps">0</b></div>
+        <div class="sum-item"><span>Клиппинг-зоны</span><b id="sumClips">0</b></div>
+      </div>
+      <div class="modal-actions">
+        <button id="btnSummaryAgain" class="primary-btn" type="button">Ещё заезд</button>
+        <button id="btnSummaryGarage" class="secondary-btn" type="button">В гараж</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Строгий порядок подключения локальных модулей (100% офлайн) -->
+  <script src="engine/math3d.js"></script>
+  <script src="engine/textures.js"></script>
+  <script src="engine/renderer.js"></script>
+  <script src="engine/audio.js"></script>
+  <script src="game/physics.js"></script>
+  <script src="game/cars.js"></script>
+  <script src="game/track.js"></script>
+  <script src="game/particles.js"></script>
+  <script src="game/main.js"></script>
+</body>
+</html>

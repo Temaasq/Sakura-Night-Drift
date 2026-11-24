@@ -1,0 +1,774 @@
+/* style.css — Адаптивный гоночный интерфейс в стиле CarX Drift Racing 2 (Landscape) */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #090612;
+  color: #f3f6ff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#gameCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ==================== ГАРАЖ ==================== */
+.garage-top {
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.brand-block {
+  background: rgba(12, 10, 24, 0.72);
+  border-left: 4px solid #ff2a85;
+  padding: 6px 14px;
+  border-radius: 8px;
+  backdrop-filter: blur(6px);
+}
+
+.brand-title {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 42, 133, 0.65);
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: #c2b8d8;
+}
+
+.garage-record {
+  background: rgba(12, 10, 24, 0.72);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.garage-record strong {
+  color: #00f0ff;
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+.garage-zoom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(12, 10, 24, 0.72);
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.hint-orbit {
+  font-size: 11px;
+  color: #d0cbe0;
+}
+
+.pill-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 42, 133, 0.25);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.garage-side {
+  position: absolute;
+  top: 66px;
+  bottom: 72px;
+  width: min(255px, 31vw);
+  background: rgba(11, 10, 22, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+
+.left-panel {
+  left: 14px;
+}
+
+.right-panel {
+  right: 14px;
+}
+
+.panel-title {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: #ff77b7;
+  margin-bottom: 6px;
+}
+
+.cat-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 6px 4px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: #d6d2e6;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #ff2a85, #b41862);
+  border-color: #ff77b7;
+  color: #fff;
+}
+
+.car-list, .track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+.car-item, .track-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 7px 9px;
+  text-align: left;
+  color: #f3f6ff;
+  cursor: pointer;
+}
+
+.car-item.active, .track-item.active {
+  background: rgba(0, 240, 255, 0.14);
+  border-color: #00f0ff;
+}
+
+.item-title {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.item-sub {
+  font-size: 10px;
+  color: #b4aec9;
+  margin-top: 2px;
+}
+
+.tuning-scroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-right: 4px;
+  touch-action: pan-y;
+}
+
+.tune-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  color: #dbd6ec;
+}
+
+.tune-row b {
+  color: #00f0ff;
+}
+
+.tune-row input[type="range"] {
+  width: 100%;
+  accent-color: #ff2a85;
+  height: 18px;
+  touch-action: pan-x;
+}
+
+.stage-btns {
+  display: flex;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.stage-btn {
+  flex: 1;
+  padding: 5px 2px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e4e0f2;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.stage-btn.active {
+  background: #ff2a85;
+  border-color: #ff8dc0;
+  color: #fff;
+}
+
+.ghost-btn {
+  margin-top: 6px;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #d4cee8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.garage-bottom {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: auto;
+}
+
+.selected-car-info {
+  background: rgba(12, 10, 24, 0.78);
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.sel-car-name {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.sel-car-sub {
+  font-size: 11px;
+  color: #00f0ff;
+}
+
+.start-btn {
+  padding: 13px 28px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #ff2a85, #ff6b2a);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  box-shadow: 0 0 20px rgba(255, 42, 133, 0.55);
+  cursor: pointer;
+}
+
+/* ==================== ИГРОВОЙ HUD ==================== */
+.hud-top {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.hud-top-left, .hud-top-right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.hud-top-left {
+  flex-direction: row;
+  gap: 6px;
+}
+
+.hud-btn {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(12, 10, 24, 0.65);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+}
+
+.hud-btn:active {
+  background: rgba(255, 42, 133, 0.55);
+}
+
+.hud-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 190px;
+}
+
+.total-score-row {
+  background: rgba(12, 10, 24, 0.68);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.total-score-row b {
+  color: #00f0ff;
+}
+
+.total-score-row .sep {
+  margin: 0 7px;
+  opacity: 0.4;
+}
+
+.drift-counter {
+  margin-top: 4px;
+  text-align: center;
+  opacity: 0.35;
+  transform: scale(0.95);
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.drift-counter.active {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.drift-live-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+
+.live-pts {
+  font-size: 28px;
+  font-weight: 900;
+  color: #ffdf40;
+  text-shadow: 0 0 14px rgba(255, 190, 20, 0.75);
+}
+
+.combo-badge {
+  background: #ff2a85;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.combo-bar-wrap {
+  width: 140px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 2px auto;
+}
+
+.combo-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #00f0ff, #ff2a85);
+}
+
+.angle-row {
+  font-size: 12px;
+  font-weight: 700;
+  color: #d8d4eb;
+}
+
+.angle-row b {
+  color: #00f0ff;
+}
+
+.hud-banner {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #ff2a85;
+  text-shadow: 0 0 12px rgba(255, 42, 133, 0.9);
+  min-height: 22px;
+}
+
+.telemetry-card {
+  background: rgba(12, 10, 24, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 7px 10px;
+  min-width: 158px;
+  backdrop-filter: blur(5px);
+}
+
+.speed-gear-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.speed-val {
+  font-size: 26px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.speed-unit {
+  font-size: 10px;
+  color: #a9a2c4;
+  margin-left: 3px;
+}
+
+.gear-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: #ff2a85;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rpm-bar-wrap {
+  height: 7px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 5px 0;
+}
+
+.rpm-bar-fill {
+  width: 15%;
+  height: 100%;
+  background: linear-gradient(90deg, #00f0ff 0%, #ffdf40 70%, #ff2244 100%);
+}
+
+.boost-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: #b7b2cc;
+}
+
+.boost-bar-wrap {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.boost-bar-fill {
+  width: 20%;
+  height: 100%;
+  background: #00f0ff;
+}
+
+/* ==================== СЕНСОРНОЕ УПРАВЛЕНИЕ ==================== */
+.controls-left {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  pointer-events: auto;
+}
+
+.steer-indicator-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.steer-indicator-thumb {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 20px;
+  height: 10px;
+  margin-left: -10px;
+  background: #00f0ff;
+  border-radius: 4px;
+}
+
+.steer-btn-row {
+  display: flex;
+  gap: 14px;
+}
+
+.touch-btn {
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  background: rgba(15, 14, 28, 0.56);
+  color: #fff;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.touch-btn.pressed {
+  background: rgba(255, 42, 133, 0.65);
+  border-color: #ff8dc0;
+  transform: scale(0.96);
+}
+
+.steer-btn {
+  width: 82px;
+  height: 76px;
+  font-size: 30px;
+}
+
+.steer-slider-wrap {
+  width: 210px;
+}
+
+.slider-label {
+  font-size: 10px;
+  text-align: center;
+  color: #c8c4dc;
+  margin-bottom: 4px;
+}
+
+.steer-slider-zone {
+  height: 68px;
+  border-radius: 34px;
+  border: 2px solid rgba(0, 240, 255, 0.45);
+  background: rgba(15, 14, 28, 0.58);
+  position: relative;
+}
+
+.steer-slider-knob {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 52px;
+  height: 52px;
+  margin-left: -26px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00f0ff, #0077ff);
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.7);
+}
+
+.controls-right {
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.aux-btn-row, .pedal-row {
+  display: flex;
+  gap: 12px;
+}
+
+.aux-btn {
+  width: 80px;
+  height: 44px;
+  font-size: 12px;
+}
+
+.handbrake-btn {
+  border-color: rgba(255, 180, 40, 0.55);
+}
+
+.clutch-btn {
+  border-color: rgba(0, 240, 255, 0.55);
+}
+
+.pedal-btn {
+  width: 82px;
+  height: 86px;
+  font-size: 13px;
+}
+
+.gas-btn {
+  width: 88px;
+  height: 98px;
+  border-color: rgba(0, 240, 140, 0.6);
+  background: rgba(0, 150, 80, 0.35);
+}
+
+.brake-btn {
+  border-color: rgba(255, 65, 85, 0.6);
+  background: rgba(165, 25, 45, 0.35);
+}
+
+/* ==================== МОДАЛЬНЫЕ ОКНА ==================== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 4, 14, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  backdrop-filter: blur(6px);
+}
+
+.modal-card {
+  width: min(410px, 90vw);
+  background: #141126;
+  border: 1px solid rgba(255, 42, 133, 0.45);
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+
+.modal-card h2 {
+  font-size: 19px;
+  margin-bottom: 12px;
+  color: #fff;
+  text-align: center;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.setting-row input[type="range"] {
+  width: 140px;
+  accent-color: #ff2a85;
+}
+
+.seg-btns {
+  display: flex;
+  gap: 5px;
+}
+
+.seg-btn {
+  padding: 6px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ddd;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.seg-btn.active {
+  background: #ff2a85;
+  border-color: #ff8bc0;
+  color: #fff;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.sum-item {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sum-item span {
+  font-size: 11px;
+  color: #b7b2cc;
+}
+
+.sum-item b {
+  font-size: 18px;
+  color: #00f0ff;
+}
+
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.primary-btn, .secondary-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px;
+  border-radius: 9px;
+  border: none;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #ff2a85, #ff6b2a);
+  color: #fff;
+}
+
+.secondary-btn {
+  background: rgba(0, 240, 255, 0.18);
+  border: 1px solid #00f0ff;
+  color: #fff;
+}
