@@ -772,3 +772,12 @@ html, body {
   border: 1px solid #00f0ff;
   color: #fff;
 }
+
+/* Точечная правка: крупные 2 педали + ручник и компактный гараж */
+.touch-btn { -webkit-tap-highlight-color: transparent; touch-action: none; }
+.touch-btn.pressed { background: rgba(255, 42, 133, 0.75) !important; border-color: #fff !important; }
+.steer-btn { width: 92px; height: 84px; font-size: 32px; }
+.handbrake-btn { width: 116px; height: 50px; font-size: 13px; border-color: rgba(255, 190, 45, 0.8); background: rgba(180, 105, 10, 0.45); }
+.pedal-btn { width: 92px; height: 104px; font-size: 14px; }
+.gas-btn { width: 98px; height: 118px; }
+.garage-side { width: min(230px, 28vw); padding: 8px; }

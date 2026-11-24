@@ -736,9 +736,9 @@
           onChange(pressed);
           if (pressed) this.audio.init();
         };
-        el.addEventListener('pointerdown', (e) => { e.preventDefault(); el.setPointerCapture(e.pointerId); set(true); });
-        el.addEventListener('pointerup', (e) => { e.preventDefault(); set(false); });
-        el.addEventListener('pointercancel', () => set(false));
+        el.addEventListener('touchstart', (e) => { e.preventDefault(); set(true); }, { passive: false }); el.addEventListener('mousedown', (e) => { e.preventDefault(); set(true); });
+        el.addEventListener('touchend', (e) => { e.preventDefault(); set(false); }, { passive: false }); window.addEventListener('mouseup', () => set(false));
+        el.addEventListener('touchcancel', () => set(false), { passive: false });
       };
 
       bindHold('btnLeft', (p) => { this.input.left = p; });
@@ -761,7 +761,7 @@
       zone.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         sliderPtr = e.pointerId;
-        zone.setPointerCapture(e.pointerId);
+        
         this.audio.init();
         updateSlider(e.clientX);
       });

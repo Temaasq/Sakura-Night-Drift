@@ -104,7 +104,7 @@
               float atten = 1.0 / (1.0 + 0.022 * dist + 0.0022 * dist * dist);
               vec3 Lp = -lightToFrag;
               float diff = max(dot(N, Lp), 0.15);
-              vec3 contrib = uHeadColor * spot * atten * 2.4;
+              vec3 contrib = uHeadColor * spot * atten * 3.2;
               lighting += contrib * diff;
               if (uSpecIntensity > 0.01) {
                 vec3 H = normalize(Lp + V);
@@ -495,8 +495,8 @@
       this.fogColor = [0.06, 0.04, 0.12];
       this.fogDensity = 0.0046;
       this.dirLightDir = [-0.35, -0.75, 0.45];
-      this.dirLightColor = [0.42, 0.48, 0.72];
-      this.skyAmbient = [0.24, 0.22, 0.38];
+      this.dirLightColor = [0.56, 0.62, 0.90];
+      this.skyAmbient = [0.34, 0.30, 0.50];
       this.groundAmbient = [0.09, 0.07, 0.12];
 
       this.headPos = new Float32Array(6);

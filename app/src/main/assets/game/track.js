@@ -210,8 +210,8 @@
         mat: {
           color: [1, 1, 1, 1],
           texture: this.textures[this.def.asphaltTex],
-          specPower: 48,
-          specIntensity: 0.72,
+          specPower: 76,
+          specIntensity: 0.96,
           doubleSided: true
         }
       });
@@ -370,7 +370,7 @@
           mesh: this.renderer.createMesh(G.merge(crowns)),
           mat: {
             color: [1.0, 0.62, 0.80, 1],
-            emissive: [0.36, 0.10, 0.24],
+            emissive: [0.58, 0.18, 0.38],
             specPower: 14,
             specIntensity: 0.2
           }
